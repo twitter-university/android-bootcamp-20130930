@@ -20,8 +20,11 @@ android {
         minSdkVersion 11
         targetSdkVersion 18
     }
+
 }
+
 
 dependencies {
     compile 'com.android.support:appcompat-v7:18.0.0'
+    compile files('libs/yambaclientlib.jar')
 }
