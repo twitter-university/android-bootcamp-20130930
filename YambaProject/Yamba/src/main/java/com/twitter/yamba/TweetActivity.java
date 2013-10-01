@@ -1,15 +1,31 @@
 package com.twitter.yamba;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class TweetActivity extends Activity {
+    private Button tweetButton;
+    private EditText tweetText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet);
+
+        tweetButton = (Button)findViewById(R.id.tweet_button);
+        tweetText = (EditText)findViewById(R.id.tweet_text);
+
+        tweetButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("TweetActivity", "onClicked");
+            }
+        });
     }
 
 
