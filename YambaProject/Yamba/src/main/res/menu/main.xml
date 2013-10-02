@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/action_tweet"
+            android:title="@string/post_tweet"
+            android:titleCondensed="@string/tweet"
+            android:showAsAction="always|withText"
+            android:icon="@android:drawable/ic_menu_edit"/>
+
+    <item
+            android:id="@+id/action_settings"
+            android:title="@string/action_settings"
+            android:orderInCategory="100"
+            android:showAsAction="never"/>
+</menu>
