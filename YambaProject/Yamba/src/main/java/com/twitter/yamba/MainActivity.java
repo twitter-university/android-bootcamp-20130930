@@ -26,7 +26,8 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_tweet:
-                startActivity(new Intent(this, TweetActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT).addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
+                startActivity(new Intent(this, TweetActivity.class).
+                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

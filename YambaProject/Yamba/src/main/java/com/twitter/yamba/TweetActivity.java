@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.marakana.android.yamba.clientlib.YambaClient;
 
-public class TweetActivity extends Activity {
+public class TweetActivity extends BaseActivity {
     private static final String TAG = TweetActivity.class.getSimpleName();
     private Button tweetButton;
     private EditText tweetText;
@@ -98,13 +98,6 @@ public class TweetActivity extends Activity {
             dialog.dismiss();
             Toast.makeText(TweetActivity.this, "Successfully posted!", Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.tweet, menu);
-        return true;
     }
 
 }
