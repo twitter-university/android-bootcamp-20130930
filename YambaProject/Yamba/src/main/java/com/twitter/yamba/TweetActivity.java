@@ -2,8 +2,10 @@ package com.twitter.yamba;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -72,8 +74,12 @@ public class TweetActivity extends Activity {
         // Executes on a worker thread
         @Override
         protected String doInBackground(String... strings) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(TweetActivity.this);
+            String username = prefs.getString( "username", "");
+            String password = prefs.getString("password", "");
+
             publishProgress(0);
-            YambaClient twitterService = new YambaClient("student", "password");
+            YambaClient twitterService = new YambaClient(username, password);
             publishProgress(50);
             twitterService.updateStatus( strings[0] );
             publishProgress(100);

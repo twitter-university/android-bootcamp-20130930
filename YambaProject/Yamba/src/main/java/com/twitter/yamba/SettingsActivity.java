@@ -5,12 +5,12 @@ import android.app.Activity;
 import android.preference.PreferenceActivity;
 import android.view.Menu;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settings);
+        setContentView(R.layout.activity_settings);
     }
 
 
