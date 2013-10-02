@@ -1,14 +1,63 @@
 package com.twitter.yamba;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
-/**
- * Created by mgargenta on 10/2/13.
- */
-public class RefreshService extends Service {
-    public IBinder onBind(Intent intent) {
-        return null;
+import com.marakana.android.yamba.clientlib.YambaClient;
+import com.marakana.android.yamba.clientlib.YambaClientException;
+
+import java.util.List;
+
+public class RefreshService extends IntentService {
+    private static final String TAG = RefreshService.class.getSimpleName();
+
+    public RefreshService() {
+        super(TAG);
+    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreated");
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+        // Check if first time around
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String username = prefs.getString("username", "");
+        String password = prefs.getString("password", "");
+
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+            return;
+        }
+
+        List<YambaClient.Status> timeline = null;
+        try {
+            YambaClient twitterService = new YambaClient(username, password);
+            timeline = twitterService.getTimeline(20);
+            for(YambaClient.Status tweet: timeline) {
+                Log.d(TAG, String.format("%s: %s", tweet.getUser(), tweet.getMessage()));
+            }
+        } catch (YambaClientException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "onHandledIntent");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroyed");
     }
 }

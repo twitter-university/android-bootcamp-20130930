@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marakana.android.yamba.clientlib.YambaClient;
+import com.marakana.android.yamba.clientlib.YambaClientException;
 
 public class TweetActivity extends BaseActivity {
     private static final String TAG = TweetActivity.class.getSimpleName();
@@ -33,7 +34,7 @@ public class TweetActivity extends BaseActivity {
         tweetText = (EditText) findViewById(R.id.tweet_text);
         tweetLength = (TextView) findViewById(R.id.tweet_length);
 
-        tweetText.addTextChangedListener( new TextWatcher() {
+        tweetText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 // ignore
@@ -54,13 +55,13 @@ public class TweetActivity extends BaseActivity {
         tweetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new UpdateTask().execute( tweetText.getText().toString() );
+                new UpdateTask().execute(tweetText.getText().toString());
 
                 Log.d("TweetActivity", "onClicked");
             }
         });
 
-        Log.d(TAG, "onCreated: " +this );
+        Log.d(TAG, "onCreated: " + this);
     }
 
     private final class UpdateTask extends AsyncTask<String, Integer, String> {
@@ -75,28 +76,23 @@ public class TweetActivity extends BaseActivity {
         @Override
         protected String doInBackground(String... strings) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(TweetActivity.this);
-            String username = prefs.getString( "username", "");
+            String username = prefs.getString("username", "");
             String password = prefs.getString("password", "");
-
-            publishProgress(0);
             YambaClient twitterService = new YambaClient(username, password);
-            publishProgress(50);
-            twitterService.updateStatus( strings[0] );
-            publishProgress(100);
-
-            return "Successfully posted!";
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-
+            try {
+                twitterService.postStatus(strings[0]);
+                return "Successfully posted!";
+            } catch (YambaClientException e) {
+                e.printStackTrace();
+                return "Failed to post";
+            }
         }
 
         // Runs on UI thread
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String result) {
             dialog.dismiss();
-            Toast.makeText(TweetActivity.this, "Successfully posted!", Toast.LENGTH_LONG).show();
+            Toast.makeText(TweetActivity.this, result, Toast.LENGTH_LONG).show();
         }
     }
 

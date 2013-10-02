@@ -13,5 +13,6 @@
     <string name="password">Password</string>
     <string name="username_summary">What\'s your username?</string>
     <string name="password_summary">What\'s your password?</string>
+    <string name="refresh">Refresh</string>
 
 </resources>
