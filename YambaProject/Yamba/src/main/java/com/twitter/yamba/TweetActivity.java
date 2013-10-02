@@ -1,20 +1,26 @@
 package com.twitter.yamba;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marakana.android.yamba.clientlib.YambaClient;
 
 public class TweetActivity extends Activity {
+    private static final String TAG = TweetActivity.class.getSimpleName();
     private Button tweetButton;
     private EditText tweetText;
+    private TextView tweetLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,25 @@ public class TweetActivity extends Activity {
 
         tweetButton = (Button) findViewById(R.id.tweet_button);
         tweetText = (EditText) findViewById(R.id.tweet_text);
+        tweetLength = (TextView) findViewById(R.id.tweet_length);
+
+        tweetText.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                // ignore
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                // ignore
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                int length = 140 - editable.length();
+                tweetLength.setText(Integer.toString(length));
+            }
+        });
 
         tweetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,9 +57,17 @@ public class TweetActivity extends Activity {
                 Log.d("TweetActivity", "onClicked");
             }
         });
+
+        Log.d(TAG, "onCreated: " +savedInstanceState );
     }
 
-    private class UpdateTask extends AsyncTask<String, Integer, String> {
+    private final class UpdateTask extends AsyncTask<String, Integer, String> {
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = ProgressDialog.show(TweetActivity.this, "Posting", "Please wait...");
+        }
 
         // Executes on a worker thread
         @Override
@@ -56,6 +89,7 @@ public class TweetActivity extends Activity {
         // Runs on UI thread
         @Override
         protected void onPostExecute(String s) {
+            dialog.dismiss();
             Toast.makeText(TweetActivity.this, "Successfully posted!", Toast.LENGTH_LONG).show();
         }
     }

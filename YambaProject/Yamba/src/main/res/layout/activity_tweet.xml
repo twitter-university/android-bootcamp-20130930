@@ -26,4 +26,14 @@
             android:hint="@string/tweet_hint"
             android:gravity="top"
             android:inputType="textAutoComplete|textAutoCorrect"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="140"
+            android:id="@+id/tweet_length"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:enabled="true"/>
 </RelativeLayout>
