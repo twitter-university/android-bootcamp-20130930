@@ -58,7 +58,7 @@ public class TweetActivity extends Activity {
             }
         });
 
-        Log.d(TAG, "onCreated: " +savedInstanceState );
+        Log.d(TAG, "onCreated: " +this );
     }
 
     private final class UpdateTask extends AsyncTask<String, Integer, String> {

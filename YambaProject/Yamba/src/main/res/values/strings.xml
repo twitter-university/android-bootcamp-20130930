@@ -8,5 +8,8 @@
     <string name="post_tweet">Post Tweet</string>
     <string name="tweet_hint">What\'s happening?</string>
     <string name="title_activity_main">Yamba</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 
 </resources>
