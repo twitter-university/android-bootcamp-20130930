@@ -2,6 +2,7 @@ package com.twitter.yamba;
 
 import android.app.IntentService;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -41,11 +42,19 @@ public class RefreshService extends IntentService {
             return;
         }
 
+        ContentValues values = new ContentValues();
         List<YambaClient.Status> timeline = null;
         try {
             YambaClient twitterService = new YambaClient(username, password);
             timeline = twitterService.getTimeline(20);
             for(YambaClient.Status tweet: timeline) {
+                values.clear();
+                values.put(TweetContract.Column.ID, tweet.getId());
+                values.put(TweetContract.Column.USER, tweet.getUser());
+                values.put(TweetContract.Column.MESSAGE, tweet.getMessage());
+                values.put(TweetContract.Column.CREATED_AT, tweet.getCreatedAt().getTime());
+                getContentResolver().insert(TweetContract.CONTENT_URI, values);
+
                 Log.d(TAG, String.format("%s: %s", tweet.getUser(), tweet.getMessage()));
             }
         } catch (YambaClientException e) {
