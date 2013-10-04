@@ -6,13 +6,35 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+
+import static android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class TimelineFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String[] FROM = {TweetContract.Column.USER, TweetContract.Column.MESSAGE};
-    private static final int[] TO = {android.R.id.text1, android.R.id.text2};
+    private static final String[] FROM = {TweetContract.Column.USER, TweetContract.Column.MESSAGE,
+            TweetContract.Column.CREATED_AT};
+    private static final int[] TO = {R.id.list_item_user, R.id.list_item_message,
+            R.id.list_item_created_at};
     private static final int LOADER_ID = 42;
     private SimpleCursorAdapter adapter;
+
+    private static final ViewBinder VIEW_BINDER = new ViewBinder() {
+
+        @Override
+        public boolean setViewValue(View view, Cursor cursor, int index) {
+            if(view.getId() != R.id.list_item_created_at) return false;
+
+            // Custom binding
+            long timestamp = cursor.getLong(index);
+            CharSequence relTime = DateUtils.getRelativeTimeSpanString(timestamp);
+            ((TextView)view).setText(relTime);
+
+            return true;
+        }
+    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -21,7 +43,8 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
         setEmptyText("Loading...");
 
         adapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_2, null, FROM, TO, 0);
+                R.layout.list_item, null, FROM, TO, 0);
+        adapter.setViewBinder(VIEW_BINDER);
 
         setListAdapter(adapter);
 
