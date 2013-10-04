@@ -43,18 +43,22 @@ public class TweetProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case TweetContract.TWEET_ITEM:
                 long id = ContentUris.parseId(uri);
-                qb.appendWhere(TweetContract.Column.ID+"="+id);
+                qb.appendWhere(TweetContract.Column.ID + "=" + id);
                 break;
             case TweetContract.TWEET_DIR:
 
                 break;
             default:
-                throw new IllegalArgumentException("Illegal uri: "+uri);
+                throw new IllegalArgumentException("Illegal uri: " + uri);
         }
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        return qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return cursor;
     }
 
     @Override
@@ -69,10 +73,15 @@ public class TweetProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insertWithOnConflict(TweetContract.TABLE, null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
 
-        Uri ret = (rowId==-1)? null : ContentUris.withAppendedId(uri, contentValues.getAsLong(TweetContract.Column.ID));
-        Log.d(TAG, "inserted uri: " + ret);
+        if (rowId == -1) {
+            return null;
+        } else {
+            getContext().getContentResolver().notifyChange(uri, null);
+            Uri ret = ContentUris.withAppendedId(uri, contentValues.getAsLong(TweetContract.Column.ID));
+            Log.d(TAG, "inserted uri: " + ret);
 
-        return ret;
+            return ret;
+        }
     }
 
 

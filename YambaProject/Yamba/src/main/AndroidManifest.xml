@@ -33,6 +33,8 @@
                 android:label="@string/title_activity_settings">
         </activity>
 
+        <activity android:name=".DetailsActivity" />
+
         <service android:name=".RefreshService"/>
 
         <provider
