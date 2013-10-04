@@ -56,7 +56,8 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentById(R.id.fragment_details);
+        DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().
+                findFragmentById(R.id.fragment_details);
 
         if (detailsFragment != null && detailsFragment.isVisible()) {
             detailsFragment.updateId(id);

@@ -5,6 +5,7 @@
           android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-sdk
             android:minSdkVersion="11"
@@ -33,7 +34,7 @@
                 android:label="@string/title_activity_settings">
         </activity>
 
-        <activity android:name=".DetailsActivity" />
+        <activity android:name=".DetailsActivity"/>
 
         <service android:name=".RefreshService"/>
 
@@ -42,6 +43,14 @@
                 android:authorities="com.twitter.yamba.TweetProvider"
                 android:exported="false"/>
 
+        <receiver android:name=".BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.twitter.yamba.action.BOOT"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
