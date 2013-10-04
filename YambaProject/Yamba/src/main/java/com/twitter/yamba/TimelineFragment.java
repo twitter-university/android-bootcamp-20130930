@@ -27,12 +27,12 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
 
         @Override
         public boolean setViewValue(View view, Cursor cursor, int index) {
-            if(view.getId() != R.id.list_item_created_at) return false;
+            if (view.getId() != R.id.list_item_created_at) return false;
 
             // Custom binding
             long timestamp = cursor.getLong(index);
             CharSequence relTime = DateUtils.getRelativeTimeSpanString(timestamp);
-            ((TextView)view).setText(relTime);
+            ((TextView) view).setText(relTime);
 
             return true;
         }
@@ -55,8 +55,15 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        getActivity().startActivity( new Intent(getActivity(),DetailsActivity.class).
-                addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT).putExtra("id", id));
+
+        DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentById(R.id.fragment_details);
+
+        if (detailsFragment != null && detailsFragment.isVisible()) {
+            detailsFragment.updateId(id);
+        } else {
+            getActivity().startActivity(new Intent(getActivity(), DetailsActivity.class).
+                    addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT).putExtra("id", id));
+        }
     }
 
     // Runs on a non-UI thread
