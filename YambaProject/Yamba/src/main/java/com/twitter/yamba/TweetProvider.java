@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
@@ -32,9 +33,28 @@ public class TweetProvider extends ContentProvider {
         return null;
     }
 
+    // select user, message from tweet where user='bob' order by created_at
     @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings2, String s2) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(TweetContract.TABLE);
+
+        switch (uriMatcher.match(uri)) {
+            case TweetContract.TWEET_ITEM:
+                long id = ContentUris.parseId(uri);
+                qb.appendWhere(TweetContract.Column.ID+"="+id);
+                break;
+            case TweetContract.TWEET_DIR:
+
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal uri: "+uri);
+        }
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        return qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     @Override
