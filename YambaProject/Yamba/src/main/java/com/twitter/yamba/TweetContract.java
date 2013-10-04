@@ -7,7 +7,7 @@ public class TweetContract {
 
     // DB specific constants
     public static final String DB_NAME = "timeline.db";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
     public static final String TABLE = "tweet";
 
     // Provider specific constants

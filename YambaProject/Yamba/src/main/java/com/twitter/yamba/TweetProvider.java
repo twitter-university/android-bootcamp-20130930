@@ -1,7 +1,9 @@
 package com.twitter.yamba;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -9,6 +11,13 @@ import android.util.Log;
 
 public class TweetProvider extends ContentProvider {
     private static final String TAG = TweetProvider.class.getSimpleName();
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+        uriMatcher.addURI(TweetContract.AUTHORITY, TweetContract.TABLE, TweetContract.TWEET_DIR);
+        uriMatcher.addURI(TweetContract.AUTHORITY, TweetContract.TABLE + "/#", TweetContract.TWEET_ITEM);
+    }
+
     private DbHelper dbHelper;
 
     @Override
@@ -30,10 +39,20 @@ public class TweetProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+
+        // assert
+        if (uriMatcher.match(uri) != TweetContract.TWEET_DIR) {
+            throw new IllegalArgumentException("Illegal URI: " + uri);
+        }
+
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.insert(TweetContract.TABLE, null, contentValues);
-        Log.d(TAG, "inserted values: " + contentValues);
-        return uri;
+        long rowId = db.insertWithOnConflict(TweetContract.TABLE, null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+
+        Uri ret = (rowId==-1)? null : ContentUris.withAppendedId(uri, contentValues.getAsLong(TweetContract.Column.ID));
+        Log.d(TAG, "inserted uri: " + ret);
+
+        return ret;
     }
 
 
