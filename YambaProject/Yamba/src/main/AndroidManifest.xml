@@ -6,6 +6,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-sdk
             android:minSdkVersion="11"
@@ -49,6 +50,11 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.twitter.yamba.action.BOOT"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".NotificationReceiver">
+            <intent-filter>
+                <action android:name="com.twitter.yamba.action.NEW_TWEET"/>
             </intent-filter>
         </receiver>
     </application>

@@ -44,6 +44,7 @@ public class RefreshService extends IntentService {
 
         ContentValues values = new ContentValues();
         List<YambaClient.Status> timeline = null;
+        int count = 0;
         try {
             YambaClient twitterService = new YambaClient(username, password);
             timeline = twitterService.getTimeline(20);
@@ -53,12 +54,17 @@ public class RefreshService extends IntentService {
                 values.put(TweetContract.Column.USER, tweet.getUser());
                 values.put(TweetContract.Column.MESSAGE, tweet.getMessage());
                 values.put(TweetContract.Column.CREATED_AT, tweet.getCreatedAt().getTime());
-                getContentResolver().insert(TweetContract.CONTENT_URI, values);
+                if( getContentResolver().insert(TweetContract.CONTENT_URI, values) != null )
+                    count++;
 
                 Log.d(TAG, String.format("%s: %s", tweet.getUser(), tweet.getMessage()));
             }
         } catch (YambaClientException e) {
             e.printStackTrace();
+        }
+
+        if(count>0) {
+            sendBroadcast( new Intent("com.twitter.yamba.action.NEW_TWEET").putExtra("count",count) );
         }
 
         Log.d(TAG, "onHandledIntent");
